@@ -8,6 +8,7 @@ using System.Net.Http;
 using System;
 using Android.Content;
 using Android.Graphics;
+using Android.Util;
 
 namespace PortFolioStatus
 {
@@ -29,8 +30,15 @@ namespace PortFolioStatus
             btn.Click += (o, e) =>
             {
                 var manager = (ConnectivityManager)ctx.GetSystemService(Android.Content.Context.ConnectivityService);
-                var netInfo = manager.ActiveNetworkInfo;
-                var isOnline = netInfo.IsConnected;
+                var isOnline = false;
+                try
+                {
+                    var netInfo = manager.ActiveNetworkInfo;
+                    isOnline = netInfo.IsConnected;
+                }catch(Exception ex)
+                {
+                    Log.Error("OnCreateView", "No network" + ex.Message);
+                }
                 if (isOnline)
                 {
                     Toast.MakeText(ctx, "Connected to network!", ToastLength.Short).Show();
