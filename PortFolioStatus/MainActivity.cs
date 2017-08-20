@@ -29,10 +29,6 @@ namespace PortFolioStatus
             var adapter = new TabAdapter(base.SupportFragmentManager, fragments, titles);
             vp.Adapter = adapter;
 
-            //DBLayer.InitDB();
-            //List<Stock> list = null;
-            //DBLayer.GetRecords(ref list);
-            //list.ForEach(x => Log.Debug("OnCreate", x.ToString()));
         }
     }
 }

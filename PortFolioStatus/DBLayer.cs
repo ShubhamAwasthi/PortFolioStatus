@@ -96,12 +96,30 @@ namespace PortFolioStatus
             }
         }
 
-        private static void Seed()
+        public static void Seed()
         {
             var s1 = new Stock { Name = "Reliance Industries", UnitCost = 12.09M, Ticker = "RELIANCE", PurchaseDate = DateTime.Now, Qty = 20, Short = false, Exchange = "NSE" };
-            var s2 = new Stock { Name = "EPC Industries", UnitCost = 11.09M, Ticker = "523754", PurchaseDate = DateTime.Now, Qty = 10, Short = false, Exchange = "BOM" };
+            var s2 = new Stock { Name = "EPC Industries", UnitCost = 11.09M, Ticker = "523754", PurchaseDate = DateTime.Now, Qty = 10, Short = true, Exchange = "BOM" };
             InsertUpdateData(s1, GetPath());
             InsertUpdateData(s2, GetPath());
+        }
+        public static bool Flush()
+        {
+            try
+            {
+                var connection = new SQLiteAsyncConnection(GetPath());
+                {
+                    var pass = connection.DropTableAsync<Stock>().Result;
+                    var create = CreateDB(GetPath());
+                    Log.Debug("DeletedDB", "Deleted DB");
+                    return true;
+                }
+            }
+            catch (SQLiteException ex)
+            {
+                Log.Error("CreateDB", "Unable to Flush DB");
+            }
+            return false;
         }
     }
 }

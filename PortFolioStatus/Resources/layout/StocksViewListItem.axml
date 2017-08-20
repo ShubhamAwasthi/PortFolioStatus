@@ -3,7 +3,78 @@
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
-  
-  <TextView android:id="@+id/Name" android:layout_width="match_parent" android:layout_height="wrap_content"/>
-
+    <TextView
+        android:id="@+id/Name"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" 
+        android:visibility="visible"/>
+    <TextView
+        android:id="@+id/Exchange"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" 
+        android:visibility="visible"/>
+    <TextView
+        android:id="@+id/Ticker"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" 
+        android:visibility="visible"/>
+    <TextView
+        android:id="@+id/Qty"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" 
+        android:visibility="visible"/>
+    <TextView
+        android:id="@+id/IsShort"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" 
+        android:visibility="visible"/>
+    <TextView
+        android:id="@+id/OriginalPrice"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" 
+        android:visibility="visible"/>
+    <TextView
+        android:id="@+id/OriginalDate"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" 
+        android:visibility="visible"/>
+    <TextView
+        android:id="@+id/CurrentPrice"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+    <TextView
+        android:id="@+id/CurrentDate"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" 
+        android:visibility="visible"/>
+    <TextView
+        android:id="@+id/ChangeFromLastTrade"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" 
+        android:visibility="visible"/>
+    <TextView
+        android:id="@+id/ChangePctFromLastTrade"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" 
+        android:visibility="visible"/>
+    <TextView
+        android:id="@+id/TotalCost"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" 
+        android:visibility="visible"/>
+    <TextView
+        android:id="@+id/TotalCurrentCost"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" 
+        android:visibility="visible"/>
+    <TextView
+        android:id="@+id/TotalChange"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" 
+        android:visibility="visible"/>
+    <TextView
+        android:id="@+id/TotalChangePct"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" 
+        android:visibility="visible"/>
 </LinearLayout>
