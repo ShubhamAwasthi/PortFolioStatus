@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Net.Http;
 using System;
 using Android.Content;
+using Android.Graphics;
 
 namespace PortFolioStatus
 {
@@ -46,6 +47,7 @@ namespace PortFolioStatus
             };
             return view;
         }
+
 
         private List<StockAdapterListItem> GetStockListForAdapter()
         {

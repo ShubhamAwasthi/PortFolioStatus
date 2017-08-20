@@ -1,4 +1,5 @@
-﻿using Android.Support.V4.App;
+﻿using Android.Graphics;
+using Android.Support.V4.App;
 using Android.Views;
 using Android.Widget;
 using System;
@@ -54,7 +55,59 @@ namespace PortFolioStatus
             view.FindViewById<TextView>(Resource.Id.TotalChange).Text = item.TotalChange;
             view.FindViewById<TextView>(Resource.Id.TotalChangePct).Text = item.TotalChangePct;
 
+            var chgLastTrade = view.FindViewById<TextView>(Resource.Id.ChangeFromLastTrade);
+            var chgPctLastTrade = view.FindViewById<TextView>(Resource.Id.ChangePctFromLastTrade);
+            var totalChange = view.FindViewById<TextView>(Resource.Id.TotalChange);
+            var totalChangePct = view.FindViewById<TextView>(Resource.Id.TotalChangePct);
+
+
+
+            var name = view.FindViewById<TextView>(Resource.Id.Name);
+            var ex = view.FindViewById<TextView>(Resource.Id.Exchange);
+            var t = view.FindViewById<TextView>(Resource.Id.Ticker);
+            var qty = view.FindViewById<TextView>(Resource.Id.Qty);
+            var isShort = view.FindViewById<TextView>(Resource.Id.IsShort);
+            var origPrice = view.FindViewById<TextView>(Resource.Id.OriginalPrice);
+            var origDt = view.FindViewById<TextView>(Resource.Id.OriginalDate);
+            var curPrice = view.FindViewById<TextView>(Resource.Id.CurrentPrice);
+            var curDt = view.FindViewById<TextView>(Resource.Id.CurrentDate);
+            var totalCost = view.FindViewById<TextView>(Resource.Id.TotalCost);
+            var totalCurCost = view.FindViewById<TextView>(Resource.Id.TotalCurrentCost);
+            
+
+            FixColor(chgLastTrade);
+            FixColor(chgPctLastTrade);
+            FixColor(totalChange);
+            FixColor(totalChangePct);
+
+            MakeYellow(ex, chgLastTrade);
+            MakeYellow(t, chgLastTrade);
+            MakeYellow(qty, chgLastTrade);
+            MakeYellow(isShort, chgLastTrade);
+            MakeYellow(origPrice, chgLastTrade);
+            MakeYellow(origDt, chgLastTrade);
+            MakeYellow(curPrice, chgLastTrade);
+            MakeYellow(curDt, chgLastTrade);
+            MakeYellow(totalCost, chgLastTrade);
+            MakeYellow(totalCurCost, chgLastTrade);
+
+            name.SetTextColor(Color.Chocolate);
+
             return view;
+        }
+
+        private void MakeYellow(TextView view, TextView chgLast)
+        {
+            if (!chgLast.Text.Contains("!"))
+                view.SetTextColor(Color.Yellow);
+        }
+
+        private void FixColor(TextView view)
+        {
+            if (view.Text.Contains("-"))
+                view.SetTextColor(Color.Red);
+            else if(!view.Text.Contains("!"))
+                view.SetTextColor(Color.Green);
         }
     }
 }
