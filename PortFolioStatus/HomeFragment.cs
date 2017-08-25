@@ -22,8 +22,9 @@ namespace PortFolioStatus
             DBLayer.Seed();
             View view = inflater.Inflate(Resource.Layout.Home, null);
             stockList = GetStockListForAdapter();
-            ListView stocksListView = view.FindViewById<ListView>(Resource.Id.stocksList);
-            stocksListView.Adapter = new StocksListViewAdapter(this.Activity, stockList);
+            var stocksListView = view.FindViewById<ExpandableListView>(Resource.Id.stocksList);
+            var adapter = new ExpandableStockListAdapter(this.Activity, stockList, dbList, new List<StockItemGoogle>());
+            stocksListView.SetAdapter(adapter);
             stocksListView.ItemClick += (o, e) => Toast.MakeText(inflater.Context, "You clicked" + e.Position, ToastLength.Long).Show();
             var btn = view.FindViewById<Button>(Resource.Id.btnSync);
             var ctx = this.Activity.ApplicationContext;
@@ -43,10 +44,12 @@ namespace PortFolioStatus
                 {
                     Toast.MakeText(ctx, "Connected to network!", ToastLength.Short).Show();
                     Toast.MakeText(ctx, "Calling google finance api!", ToastLength.Short).Show();
-                     GetStocksInfo(ctx);
+                    var stockGoogle = GetStocksInfo(ctx);
                     Toast.MakeText(ctx, "Got Response!", ToastLength.Short).Show();
-                    stocksListView.Adapter = new StocksListViewAdapter(this.Activity, stockList);
-                    ((StocksListViewAdapter)stocksListView.Adapter).NotifyDataSetChanged();
+                    adapter = new ExpandableStockListAdapter(this.Activity, stockList, dbList, stockGoogle);
+                    adapter.IsFixed = true;
+                    stocksListView.SetAdapter(adapter);
+                    //adapter.NotifyDataSetChanged();
                 }
                 else
                 {
@@ -65,28 +68,28 @@ namespace PortFolioStatus
             {
                 var stockAdapterListItem = new StockAdapterListItem
                 {
-                    Name = Android.Text.Html.FromHtml("<b>Name: "+item.Name+"</b>").ToString(),
-                    Exchange = Android.Text.Html.FromHtml("<b>Exchange: " + item.Exchange + "</b>").ToString(),
-                    Ticker = Android.Text.Html.FromHtml("<b>Ticker: " + item.Ticker + "</b>").ToString(),
-                    Qty = Android.Text.Html.FromHtml("<b>Units: " + item.Qty + "</b>").ToString(),
-                    IsShort = Android.Text.Html.FromHtml("<b>Is this Short? " + (item.Short ? "Yes" : "No") + "</b>").ToString(),
-                    OriginalPrice = Android.Text.Html.FromHtml("<b>Unit Cost: " + item.UnitCost + "</b>").ToString(),
-                    OriginalDate = Android.Text.Html.FromHtml("<b>Transaction Date: " + item.CurrentDateTime + "</b>").ToString(),
-                    CurrentPrice = Android.Text.Html.FromHtml("<b>Current Price: <font color='#EE0000'>Press Sync button!</font></b>").ToString(),
-                    CurrentDate = Android.Text.Html.FromHtml("<b>Current Date: <font color='#EE0000'>Press Sync button!</font></b>").ToString(),
-                    ChangeFromLastTrade = Android.Text.Html.FromHtml("<b>Change from last Trade: <font color='#EE0000'>Press Sync button!</font></b>").ToString(),
-                    ChangePctFromLastTrade = Android.Text.Html.FromHtml("<b>ChangePct from last Trade: <font color='#EE0000'>Press Sync button!</font></b>").ToString(),
-                    TotalCost = Android.Text.Html.FromHtml("<b>Total Cost: "+item.UnitCost * item.Qty+"</b>").ToString(),
-                    TotalCurrentCost = Android.Text.Html.FromHtml("<b>Total Current Cost: <font color='#EE0000'>Press Sync button!</font></b>").ToString(),
-                    TotalChange = Android.Text.Html.FromHtml("<b>Total Change: <font color='#EE0000'>Press Sync button!</font></b>").ToString(),
-                    TotalChangePct = Android.Text.Html.FromHtml("<b>Total Change Pct: <font color='#EE0000'>Press Sync button!</font></b>").ToString()
+                    Name = "Name: "+item.Name,
+                    Exchange = "Exchange: " + item.Exchange,
+                    Ticker = "Ticker: " + item.Ticker,
+                    Qty = "Units: " + item.Qty,
+                    IsShort = "Is this Short? " + (item.Short ? "Yes" : "No"),
+                    OriginalPrice = "Unit Cost: " + item.UnitCost,
+                    OriginalDate = "Transaction Date: " + item.CurrentDateTime,
+                    CurrentPrice = "Current Price: Press Sync button!",
+                    CurrentDate = "Current Date: Press Sync button!",
+                    ChangeFromLastTrade = "Change from last Trade: Press Sync button!",
+                    ChangePctFromLastTrade = "ChangePct from last Trade: Press Sync button!",
+                    TotalCost = "Total Cost: "+item.UnitCost * item.Qty+"",
+                    TotalCurrentCost = "Total Current Cost: Press Sync button!",
+                    TotalChange = "Total Change: Press Sync button!",
+                    TotalChangePct = "Total Change Pct: Press Sync button!"
                 };
                 respList.Add(stockAdapterListItem);
             }
             return respList;
         }
 
-        private void GetStocksInfo(Context ctx)
+        private List<StockItemGoogle> GetStocksInfo(Context ctx)
         {
             var stockGoogle = new List<StockItemGoogle>();
             try
@@ -113,16 +116,17 @@ namespace PortFolioStatus
                         var stockListItem = GetItemFromList(item.Exchange, item.Ticker);
                         var stockListItemDB = GetItemFromDB(item.Exchange, item.Ticker);
                         bool isShort = stockListItemDB.Short;
-                        adapterItem.CurrentPrice = Android.Text.Html.FromHtml("<b>Current Price: "+item.Price+"</b>").ToString();
-                        adapterItem.CurrentDate = Android.Text.Html.FromHtml("<b>Current Date: "+item.Date+"</b>").ToString();
-                        adapterItem.ChangeFromLastTrade = Android.Text.Html.FromHtml("<b>Change from last Trade: "+(FixForShort(item.Change, isShort) < 0 ? "<font color='#EE0000' >"+ FixForShort(item.Change, isShort) + "</font>": "<font color='#00EE00' >" + FixForShort(item.Change, isShort) + "</font>") +"</b>").ToString();
-                        adapterItem.ChangePctFromLastTrade = Android.Text.Html.FromHtml("<b>ChangePct from last Trade: "+ (FixForShort(item.ChangePct, isShort) < 0 ? "<font color='#EE0000' >" + FixForShort(item.ChangePct, isShort) + "</font>" : "<font color='#00EE00' >" + FixForShort(item.ChangePct, isShort) + "</font>") + "</b>").ToString();
-                        adapterItem.TotalCurrentCost = Android.Text.Html.FromHtml("<b>Total Current Cost: "+ (item.Price * stockListItem.Qty < 0 ? "<font color='#EE0000' >" + item.Price * stockListItem.Qty + "</font>" : "<font color='#00EE00' >" + item.Price * stockListItem.Qty + "</font>") + "</b>").ToString();
-                        adapterItem.TotalChange = Android.Text.Html.FromHtml("<b>Total Change: "+ (FixForShort((item.Price - stockListItem.UnitCost), isShort) * stockListItem.Qty < 0 ? "<font color='#EE0000' >" + FixForShort((item.Price - stockListItem.UnitCost), isShort) * stockListItem.Qty + "</font>" : "<font color='#00EE00' >" + FixForShort((item.Price - stockListItem.UnitCost), isShort) * stockListItem.Qty + "</font>") + "</b>").ToString();
-                        adapterItem.TotalChangePct = Android.Text.Html.FromHtml("<b>Total Change Pct: "+ (Percentage(stockListItem.UnitCost, item.Price, isShort) < 0 ? "<font color='#EE0000' >" + Percentage(stockListItem.UnitCost, item.Price, isShort) + "</font>" : "<font color='#00EE00' >" + Percentage(stockListItem.UnitCost, item.Price, isShort) + "</font>") + "</b>").ToString();
+                        adapterItem.CurrentPrice = "Current Price: " + item.Price;
+                        adapterItem.CurrentDate = "Current Date: " + item.Date;
+                        adapterItem.ChangeFromLastTrade = "Change from last Trade: " + (FixForShort(item.Change, isShort) < 0 ? "" + FixForShort(item.Change, isShort) + "" : "" + FixForShort(item.Change, isShort) + "");
+                        adapterItem.ChangePctFromLastTrade = "ChangePct from last Trade: " + (FixForShort(item.ChangePct, isShort) < 0 ? "" + FixForShort(item.ChangePct, isShort) + "" : "" + FixForShort(item.ChangePct, isShort) + "");
+                        adapterItem.TotalCurrentCost = "Total Current Cost: " + (item.Price * stockListItem.Qty < 0 ? "" + item.Price * stockListItem.Qty + "" : "" + item.Price * stockListItem.Qty + "");
+                        adapterItem.TotalChange = "Total Change: " + (FixForShort((item.Price - stockListItem.UnitCost), isShort) * stockListItem.Qty < 0 ? "" + FixForShort((item.Price - stockListItem.UnitCost), isShort) * stockListItem.Qty + "" : "" + FixForShort((item.Price - stockListItem.UnitCost), isShort) * stockListItem.Qty + "");
+                        adapterItem.TotalChangePct = "Total Change Pct: " + (Percentage(stockListItem.UnitCost, item.Price, isShort) < 0 ? "" + Percentage(stockListItem.UnitCost, item.Price, isShort) + "" : "" + Percentage(stockListItem.UnitCost, item.Price, isShort) + "");
                     }
                 }
             }
+            return stockGoogle;
             //Test comment
         }
 

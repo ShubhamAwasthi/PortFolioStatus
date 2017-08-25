@@ -62,6 +62,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="DBLayer.cs" />
+    <Compile Include="ExpandableStockListAdapter.cs" />
     <Compile Include="HomeFragment.cs" />
     <Compile Include="MainActivity.cs" />
     <Compile Include="Resources\Resource.Designer.cs" />
@@ -93,6 +94,9 @@
       <SubType>Designer</SubType>
     </AndroidResource>
     <AndroidResource Include="Resources\layout\StocksViewListItem.axml">
+      <SubType>Designer</SubType>
+    </AndroidResource>
+    <AndroidResource Include="Resources\layout\StocksViewGroupListItem.axml">
       <SubType>Designer</SubType>
     </AndroidResource>
   </ItemGroup>
