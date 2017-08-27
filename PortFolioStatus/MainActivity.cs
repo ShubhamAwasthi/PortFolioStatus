@@ -7,7 +7,7 @@ using Android.Support.V4.View;
 
 namespace PortFolioStatus
 {
-    [Activity(Label = "PortfolioStatus", MainLauncher = true, Icon = "@drawable/icon")]
+    [Activity(Label = "Portfolio\nStatus", MainLauncher = true, Icon = "@drawable/icon")]
     public class MainActivity : Android.Support.V4.App.FragmentActivity
     {
         protected override void OnCreate(Bundle bundle)

@@ -7,7 +7,9 @@
         android:id="@+id/stocksList"
         android:layout_height="wrap_content"
         android:layout_width="match_parent" 
-        android:layout_weight="19"/>
+        android:layout_weight="19"
+        android:groupIndicator="@null"
+        android:alpha="0.5"/>
   <Button android:text="Sync with Exchanges"
           android:textAllCaps="false"
           android:textAlignment="center"

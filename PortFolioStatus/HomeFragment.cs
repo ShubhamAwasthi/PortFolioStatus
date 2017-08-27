@@ -25,7 +25,7 @@ namespace PortFolioStatus
             var stocksListView = view.FindViewById<ExpandableListView>(Resource.Id.stocksList);
             var adapter = new ExpandableStockListAdapter(this.Activity, stockList, dbList, new List<StockItemGoogle>());
             stocksListView.SetAdapter(adapter);
-            stocksListView.ItemClick += (o, e) => Toast.MakeText(inflater.Context, "You clicked" + e.Position, ToastLength.Long).Show();
+            stocksListView.ItemClick += (o, e) => Toast.MakeText(Android.App.Application.Context, "You clicked" + e.Position, ToastLength.Long).Show();
             var btn = view.FindViewById<Button>(Resource.Id.btnSync);
             var ctx = this.Activity.ApplicationContext;
             btn.Click += (o, e) =>
@@ -42,18 +42,20 @@ namespace PortFolioStatus
                 }
                 if (isOnline)
                 {
-                    Toast.MakeText(ctx, "Connected to network!", ToastLength.Short).Show();
-                    Toast.MakeText(ctx, "Calling google finance api!", ToastLength.Short).Show();
-                    var stockGoogle = GetStocksInfo(ctx);
-                    Toast.MakeText(ctx, "Got Response!", ToastLength.Short).Show();
-                    adapter = new ExpandableStockListAdapter(this.Activity, stockList, dbList, stockGoogle);
-                    adapter.IsFixed = true;
+                    Toast.MakeText(Android.App.Application.Context, "Connected to network!", ToastLength.Short).Show();
+                    Toast.MakeText(Android.App.Application.Context, "Calling google finance api!", ToastLength.Short).Show();
+                    var stockGoogle = GetStocksInfo(Android.App.Application.Context);
+                    Toast.MakeText(Android.App.Application.Context, "Got Response!", ToastLength.Short).Show();
+                    adapter = new ExpandableStockListAdapter(this.Activity, stockList, dbList, stockGoogle)
+                    {
+                        IsFixed = true
+                    };
                     stocksListView.SetAdapter(adapter);
                     //adapter.NotifyDataSetChanged();
                 }
                 else
                 {
-                    Toast.MakeText(ctx, "Not Connected to network!\nPlease connect to network!", ToastLength.Long).Show();
+                    Toast.MakeText(Android.App.Application.Context, "Not Connected to network!\nPlease connect to network!", ToastLength.Long).Show();
                 }
             };
             return view;

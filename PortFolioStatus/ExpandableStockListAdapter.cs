@@ -134,6 +134,13 @@ namespace PortFolioStatus
                 view = inflater.Inflate(Resource.Layout.StocksViewGroupListItem, null);
             }
 
+            var indicator = view.FindViewById<ImageView>(Resource.Id.groupImageIndicator);
+
+            if (isExpanded)
+                indicator.SetImageResource(Android.Resource.Drawable.ArrowUpFloat);
+            else
+                indicator.SetImageResource(Android.Resource.Drawable.ArrowDownFloat);
+
             var title = view.FindViewById<TextView>(Resource.Id.groupTitle);
             var price = view.FindViewById<TextView>(Resource.Id.groupPrice);
             var currentPrice = view.FindViewById<TextView>(Resource.Id.groupCurrentPrice);
