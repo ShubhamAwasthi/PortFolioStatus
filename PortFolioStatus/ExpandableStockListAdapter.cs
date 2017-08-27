@@ -151,7 +151,7 @@ namespace PortFolioStatus
                                     && listItem.Ticker.Contains(x.Ticker) 
                                     && listItem.OriginalPrice.Contains(x.UnitCost.ToString()));
 
-            title.Text = dbItem.Name.Trim().PadRight(25).PadLeft(30);
+            title.Text = dbItem.Name.Trim();
             var titleColor = Color.Snow;
             title.SetTextColor(titleColor);
             price.SetTextColor(titleColor);
