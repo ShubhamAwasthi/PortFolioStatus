@@ -9,6 +9,7 @@ using System;
 using Android.Content;
 using Android.Graphics;
 using Android.Util;
+using System.Text.RegularExpressions;
 
 namespace PortFolioStatus
 {
@@ -98,9 +99,9 @@ namespace PortFolioStatus
             {
                 using (var client = new HttpClient())
                 {
-                    var response = client.GetAsync("http://finance.google.com/finance/info?client=ig&q=NSE:RELIANCE,NSE:TATAMOTORS,BOM:523754,NSE:Infy").Result;
+                    var response = client.GetAsync("https://finance.google.com/finance?q=NSE:RELIANCE,NSE:TATAMOTORS,BOM:523754,NSE:Infy").Result;
                     var content = response.Content.ReadAsStringAsync().Result;
-                    content = content.Substring(4);
+                    content = Regex.Match(content, @"rows:\[\{.*?\}\]").Value.Substring(5);
                     var jArrayContent = JArray.Parse(content);
                     stockGoogle = GetStocksFromGoogleResponse(jArrayContent);
                 }
@@ -176,12 +177,12 @@ namespace PortFolioStatus
             {
                 var stock = new StockItemGoogle
                 {
-                    Ticker = item["t"].Value<string>(),
-                    Exchange = item["e"].Value<string>(),
-                    Price = item["l_fix"].Value<decimal>(),
-                    Date = item["lt_dts"].Value<System.DateTime>(),
-                    Change = item["c_fix"].Value<decimal>(),
-                    ChangePct = item["cp_fix"].Value<decimal>()
+                    Ticker = item["values"][0].Value<string>(),
+                    Exchange = item["values"][8].Value<string>(),
+                    Price = item["values"][2].Value<decimal>(),
+                    Date = DateTime.Now,
+                    Change = item["values"][3].Value<decimal>(),
+                    ChangePct = item["values"][5].Value<decimal>()
                 };
                 list.Add(stock);
             }
