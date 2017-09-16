@@ -29,6 +29,11 @@ namespace PortFolioStatus
             stocksListView.ItemClick += (o, e) => Toast.MakeText(Android.App.Application.Context, "You clicked" + e.Position, ToastLength.Long).Show();
             var btn = view.FindViewById<Button>(Resource.Id.btnSync);
             var ctx = this.Activity.ApplicationContext;
+            var btnAdd = view.FindViewById<Button>(Resource.Id.btnAdd);
+            btnAdd.Click += (o, e) => {
+                var intent = new Intent(ctx, typeof(HomeAdd)).SetFlags(ActivityFlags.ClearTask);
+                StartActivity(intent);
+            };
             btn.Click += (o, e) =>
             {
                 var manager = (ConnectivityManager)ctx.GetSystemService(Android.Content.Context.ConnectivityService);
