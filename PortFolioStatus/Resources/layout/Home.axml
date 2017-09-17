@@ -11,6 +11,14 @@
         android:groupIndicator="@null"
         android:alpha="0.5" />
     <Button
+        android:text="Add new Item"
+        android:textAllCaps="false"
+        android:textAlignment="center"
+        android:id="@+id/btnAdd"
+        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:layout_weight="1" />
+    <Button
         android:text="Sync with Exchanges"
         android:textAllCaps="false"
         android:textAlignment="center"

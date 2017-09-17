@@ -71,6 +71,8 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="TimePickerFragment.cs" />
+    <Compile Include="DatePickerFragment.cs" />
     <Compile Include="DBLayer.cs" />
     <Compile Include="ExpandableStockListAdapter.cs" />
     <Compile Include="HomeAdd.cs" />
