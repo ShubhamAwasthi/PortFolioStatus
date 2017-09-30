@@ -106,12 +106,16 @@ namespace PortFolioStatus
                 {
                     var response = client.GetAsync("https://finance.google.com/finance?q=NSE:RELIANCE,NSE:TATAMOTORS,BOM:523754,NSE:Infy").Result;
                     var content = response.Content.ReadAsStringAsync().Result;
-                    content = Regex.Match(content, @"rows:\[\{.*?\}\]").Value.Substring(5);
+                    content = Regex.Match(content, "rows\":(?<value>\\[.*?}\\])").Value.Substring(6);
                     var jArrayContent = JArray.Parse(content);
                     stockGoogle = GetStocksFromGoogleResponse(jArrayContent);
                 }
             }
-            catch(Exception e)
+            catch(HttpRequestException e)
+            {
+                Toast.MakeText(ctx, "Error while querying the google finance api\n" + e.Message, ToastLength.Long).Show();
+            }
+            catch (Exception e)
             {
                 Toast.MakeText(ctx, "Error while querying the google finance api\n" + e.Message, ToastLength.Long).Show();
             }
