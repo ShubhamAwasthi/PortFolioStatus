@@ -17,10 +17,20 @@ namespace PortFolioStatus
     {
         List<StockAdapterListItem> stockList = new List<StockAdapterListItem>();
         List<Stock> dbList = new List<Stock>();
+        bool refresh = true;
+        public override void OnResume()
+        {
+            base.OnResume();
+            if (refresh)
+            {
+                this.FragmentManager.BeginTransaction().Detach(this).Attach(this).Commit();
+            }
+            refresh = false;
+        }
         public override View OnCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
         {
-            DBLayer.Flush();
-            DBLayer.Seed();
+            //DBLayer.Flush();
+            //DBLayer.Seed();
             View view = inflater.Inflate(Resource.Layout.Home, null);
             stockList = GetStockListForAdapter();
             var stocksListView = view.FindViewById<ExpandableListView>(Resource.Id.stocksList);
@@ -32,6 +42,7 @@ namespace PortFolioStatus
             var btnAdd = view.FindViewById<Button>(Resource.Id.btnAdd);
             btnAdd.Click += (o, e) => {
                 var intent = new Intent(ctx, typeof(HomeAdd)).SetFlags(ActivityFlags.ClearTask);
+                refresh = true;
                 StartActivity(intent);
             };
             btn.Click += (o, e) =>

@@ -8,92 +8,78 @@
       android:layout_width="match_parent"
       android:layout_height="0dp"
       android:layout_weight="19">
-    <EditText 
-      android:id="@+id/HomeAddName"
-      android:hint="Enter the Stock name"
-      android:layout_width="match_parent"
-      android:layout_height="0dp"
-      android:layout_weight="1"/>
     <EditText
-      android:id="@+id/HomeAddName"
-      android:hint="Enter the Stock symbol"
-      android:layout_width="match_parent"
-      android:layout_height="0dp"
-      android:layout_weight="1"/>
+        android:id="@+id/HomeAddName"
+        android:hint="Enter the Stock name"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1" />
     <EditText
-      android:id="@+id/HomeAddName"
-      android:hint="Enter the Stock exchange"
-      android:layout_width="match_parent"
-      android:layout_height="0dp"
-      android:layout_weight="1"/>
+        android:id="@+id/HomeAddSymbol"
+        android:hint="Enter the Stock symbol"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1" />
     <EditText
-      android:id="@+id/HomeAddName"
-      android:hint="Enter the Stock units"
-      android:layout_width="match_parent"
-      android:layout_height="0dp"
-      android:layout_weight="1"/>
+        android:id="@+id/HomeAddExchange"
+        android:hint="Enter the Stock exchange"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1" />
     <EditText
-      android:id="@+id/HomeAddName"
-      android:hint="Enter the Stock unit price"
-      android:layout_width="match_parent"
-      android:layout_height="0dp"
-      android:layout_weight="1"/>
+        android:id="@+id/HomeAddUnits"
+        android:hint="Enter the Stock units"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1" />
+    <EditText
+        android:id="@+id/HomeAddPrice"
+        android:hint="Enter the Stock unit price"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1" />
     <Button
-       android:text="ChooseDate"
-       android:textAllCaps="false"
-       android:textAlignment="center"
-       android:id="@+id/btnHomeDate"
-       android:layout_height="0dp"
-       android:layout_width="match_parent"
-       android:layout_weight="1"
-      />
+        android:text="ChooseDate"
+        android:textAllCaps="false"
+        android:textAlignment="center"
+        android:id="@+id/btnHomeDate"
+        android:layout_height="0dp"
+        android:layout_width="match_parent"
+        android:layout_weight="1" />
     <EditText
-      android:id="@+id/homeDate"
-      android:hint="selected date appears here"
-      android:layout_width="match_parent"
-      android:layout_height="0dp"
-      android:layout_weight="1"/>
-    <Button
-       android:text="ChooseTime"
-       android:textAllCaps="false"
-       android:textAlignment="center"
-       android:id="@+id/btnHomeTime"
-       android:layout_height="0dp"
-       android:layout_width="match_parent"
-       android:layout_weight="1"/>
+        android:id="@+id/HomeAddDate"
+        android:hint="selected date appears here"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1" />
+
     <EditText
-      android:id="@+id/homeTime"
-      android:hint="selected time appears here"
-      android:layout_width="match_parent"
-      android:layout_height="0dp"
-      android:layout_weight="1"/>
-    <EditText
-      android:id="@+id/HomeAddName"
-      android:hint="Is this a short type transaction?"
-      android:layout_width="match_parent"
-      android:layout_height="0dp"
-      android:layout_weight="1"/>
+        android:id="@+id/HomeAddShort"
+        android:hint="Is this a short type transaction?"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1" />
   </LinearLayout>
   <LinearLayout
-    android:orientation="horizontal"
-    android:layout_width="match_parent"
-    android:layout_height="0dp"
-    android:layout_weight="2">
+      android:orientation="horizontal"
+      android:layout_width="match_parent"
+      android:layout_height="0dp"
+      android:layout_weight="2">
     <Button
-          android:text="Save"
-          android:textAllCaps="false"
-          android:textAlignment="center"
-          android:id="@+id/btnHomeSave"
-          android:layout_height="wrap_content"
-          android:layout_width="0dp"
-          android:layout_weight="1" />
+        android:text="Save"
+        android:textAllCaps="false"
+        android:textAlignment="center"
+        android:id="@+id/btnHomeSave"
+        android:layout_height="wrap_content"
+        android:layout_width="0dp"
+        android:layout_weight="1" />
     <Button
-          android:text="Cancel"
-          android:textAllCaps="false"
-          android:textAlignment="center"
-          android:id="@+id/btnHomeCancel"
-          android:layout_height="wrap_content"
-          android:layout_width="0dp"
-          android:layout_weight="1" />
+        android:text="Cancel"
+        android:textAllCaps="false"
+        android:textAlignment="center"
+        android:id="@+id/btnHomeCancel"
+        android:layout_height="wrap_content"
+        android:layout_width="0dp"
+        android:layout_weight="1" />
   </LinearLayout>
 </LinearLayout>

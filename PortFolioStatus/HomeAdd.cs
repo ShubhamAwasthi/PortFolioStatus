@@ -23,28 +23,36 @@ namespace PortFolioStatus
             var saveBtn = FindViewById<Button>(Resource.Id.btnHomeSave);
             var cancelBtn = FindViewById<Button>(Resource.Id.btnHomeCancel);
             var dateBtn = FindViewById<Button>(Resource.Id.btnHomeDate);
-            var selectedDate = FindViewById<EditText>(Resource.Id.homeDate);
-            var timeBtn = FindViewById<Button>(Resource.Id.btnHomeTime);
-            var selectedTime = FindViewById<EditText>(Resource.Id.homeTime);
-            dateBtn.Click += (o, e) => {
+            var selectedDate = FindViewById<EditText>(Resource.Id.HomeAddDate);
+
+            dateBtn.Click += (o, e) =>
+            {
                 DatePickerFragment frag = DatePickerFragment.NewInstance(delegate (DateTime time)
                 {
                     selectedDate.Text = time.ToLongDateString();
                 });
                 frag.Show(FragmentManager, DatePickerFragment.TAG);
             };
-            timeBtn.Click += (o, e) => {
-                TimePickerFragment frag = TimePickerFragment.NewInstance(delegate (TimePickerDialog.TimeSetEventArgs time)
+            
+            saveBtn.Click += (o, e) =>
+            {
+                var resp = DBLayer.InsertUpdate(new Stock
                 {
-                    selectedTime.Text = time.HourOfDay + ":" + time.Minute;
+                    Name = FindViewById<EditText>(Resource.Id.HomeAddName).Text,
+                    PurchaseDate = DateTime.Parse(FindViewById<EditText>(Resource.Id.HomeAddDate).Text),
+                    Ticker = FindViewById<EditText>(Resource.Id.HomeAddSymbol).Text,
+                    Exchange = FindViewById<EditText>(Resource.Id.HomeAddExchange).Text,
+                    Qty = int.Parse(FindViewById<EditText>(Resource.Id.HomeAddUnits).Text),
+                    UnitCost = decimal.Parse(FindViewById<EditText>(Resource.Id.HomeAddPrice).Text),
+                    Short = FindViewById<EditText>(Resource.Id.HomeAddShort).Text.ToUpper().StartsWith("Y") ? true : false,
                 });
-                frag.Show(FragmentManager, TimePickerFragment.TAG);
-            };
-            saveBtn.Click += (o, e) => {
+                Toast.MakeText(this, resp ? "success" : "fail", ToastLength.Long).Show();
+                
                 Finish();
             };
 
-            cancelBtn.Click += (o, e) => {
+            cancelBtn.Click += (o, e) =>
+            {
                 Finish();
             };
 
