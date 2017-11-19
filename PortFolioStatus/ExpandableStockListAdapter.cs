@@ -25,6 +25,7 @@ namespace PortFolioStatus
         }
 
 
+
         public override long GetChildId(int groupPosition, int childPosition)
         {
             return childPosition;
@@ -60,6 +61,26 @@ namespace PortFolioStatus
             view.FindViewById<TextView>(Resource.Id.TotalCurrentCost).Text = item.TotalCurrentCost;
             view.FindViewById<TextView>(Resource.Id.TotalChange).Text = item.TotalChange;
             view.FindViewById<TextView>(Resource.Id.TotalChangePct).Text = item.TotalChangePct;
+
+            if (!view.FindViewById<Button>(Resource.Id.btnRemove).HasOnClickListeners)
+            {
+                view.FindViewById<Button>(Resource.Id.btnRemove).Click += (o, e) =>
+                {
+                    DBLayer.Delete(new Stock() { ID = item.Id });
+                    this.activity.Recreate();
+                };
+            }
+
+            var ctx = this.activity.ApplicationContext;
+            if (!view.FindViewById<Button>(Resource.Id.btnEdit).HasOnClickListeners)
+            {
+                view.FindViewById<Button>(Resource.Id.btnEdit).Click += (o, e) =>
+                {
+                    var intent = new Intent(ctx, typeof(HomeAdd)).SetFlags(ActivityFlags.NewTask);
+                    intent.PutExtra("Id", item.Id.ToString());
+                    ctx.StartActivity(intent);
+                };
+            }
 
             if (!IsFixed)
                 return view;
@@ -101,6 +122,8 @@ namespace PortFolioStatus
             MakeYellow(totalCurCost, chgLastTrade);
 
             name.SetTextColor(Color.Chocolate);
+
+            
 
             return view;
         }

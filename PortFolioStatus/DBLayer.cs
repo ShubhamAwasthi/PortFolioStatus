@@ -28,6 +28,10 @@ namespace PortFolioStatus
             return InsertUpdateData(data, GetPath());
         }
 
+        public static bool Delete(Stock data) {
+            return DeleteData(data, GetPath());
+        }
+
         public static bool GetRecords(ref List<Stock> records)
         {
             var list = FindRecords(GetPath());
@@ -38,6 +42,18 @@ namespace PortFolioStatus
             }
             records = null;
             return false;
+        }
+
+        public static Stock GetRecordByID(int id) {
+            Stock response = null;
+
+            var list = FindRecords(GetPath());
+            if (list != null)
+            {
+                response = list.Find(x => x.ID == id);
+            }
+
+            return response;
         }
 
         private static bool CreateDB(string path)
@@ -64,7 +80,9 @@ namespace PortFolioStatus
             {
                 var db = new SQLiteAsyncConnection(path);
                 var result = 0;
-                if (db.InsertAsync(data).Result != 0)
+                if (data.ID == 0)
+                    result = db.InsertAsync(data).Result;
+                else
                     result = db.UpdateAsync(data).Result;
                 if (result != 1)
                     throw new ApplicationException("Unable to Update DB for: " + data.ToString());
@@ -74,6 +92,23 @@ namespace PortFolioStatus
             catch (SQLiteException ex)
             {
                 Log.Error("InsertUpdateData", ex.Message);
+            }
+            return false;
+        }
+
+        private static bool DeleteData(Stock data, string path)
+        {
+            try
+            {
+                var db = new SQLiteAsyncConnection(path);
+                var result = 0;
+                result = db.DeleteAsync(data).Result;
+                Log.Debug("DeleteData", "Single data file deleted");
+                return true;
+            }
+            catch (SQLiteException ex)
+            {
+                Log.Error("DeleteData", ex.Message);
             }
             return false;
         }

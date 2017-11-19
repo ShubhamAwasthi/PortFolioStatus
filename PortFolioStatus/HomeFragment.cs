@@ -17,7 +17,7 @@ namespace PortFolioStatus
     {
         List<StockAdapterListItem> stockList = new List<StockAdapterListItem>();
         List<Stock> dbList = new List<Stock>();
-        bool refresh = true;
+        static bool refresh = true;
         public override void OnResume()
         {
             base.OnResume();
@@ -87,13 +87,14 @@ namespace PortFolioStatus
             {
                 var stockAdapterListItem = new StockAdapterListItem
                 {
+                    Id = item.ID,
                     Name = "Name: "+item.Name,
                     Exchange = "Exchange: " + item.Exchange,
                     Ticker = "Ticker: " + item.Ticker,
                     Qty = "Units: " + item.Qty,
                     IsShort = "Is this Short? " + (item.Short ? "Yes" : "No"),
                     OriginalPrice = "Unit Cost: " + item.UnitCost,
-                    OriginalDate = "Transaction Date: " + item.CurrentDateTime,
+                    OriginalDate = "Transaction Date: " + item.PurchaseDate.ToString("%d MMM yyyy"),
                     CurrentPrice = "Current Price: Press Sync button!",
                     CurrentDate = "Current Date: Press Sync button!",
                     ChangeFromLastTrade = "Change from last Trade: Press Sync button!",

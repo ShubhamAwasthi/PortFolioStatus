@@ -93,6 +93,11 @@ namespace PortFolioStatus
 
             name.SetTextColor(Color.Chocolate);
 
+            view.FindViewById<Button>(Resource.Id.btnRemove).Click += (o, e)=>{
+                DBLayer.Delete(new Stock() { ID = item.Id });
+                this.NotifyDataSetChanged();
+            };
+
             return view;
         }
 

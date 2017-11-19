@@ -15,6 +15,32 @@ namespace PortFolioStatus
     [Activity(Label = "Add New Item")]
     public class HomeAdd : Activity
     {
+        private static DateTime ParsedDate(string date)
+        {
+
+
+            var monthDigit = new Dictionary<string, string>() {
+                { "january", "1" },
+                { "february", "2" },
+                { "march", "3" },
+                { "april", "4" },
+                { "may", "5" },
+                { "june", "6" },
+                { "july", "7" },
+                { "august", "8" },
+                { "september", "9" },
+                { "october", "10" },
+                { "november", "11" },
+                { "december", "12" },
+            };
+            var tokens = date.Split(',');
+            var year = tokens[2].Trim();
+            var monthDate = tokens[1].Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
+            var month = monthDigit[monthDate[0].ToLower().Trim()];
+            var day = monthDate[1].Trim();
+            return new DateTime(int.Parse(year), int.Parse(month), int.Parse(day));
+
+        }
         protected override void OnCreate(Bundle savedInstanceState)
         {
             base.OnCreate(savedInstanceState);
@@ -24,6 +50,18 @@ namespace PortFolioStatus
             var cancelBtn = FindViewById<Button>(Resource.Id.btnHomeCancel);
             var dateBtn = FindViewById<Button>(Resource.Id.btnHomeDate);
             var selectedDate = FindViewById<EditText>(Resource.Id.HomeAddDate);
+            var id = Intent.GetStringExtra("Id") ?? "";
+            if (!string.IsNullOrEmpty(id))
+            {
+                Stock stock = DBLayer.GetRecordByID(int.Parse(id));
+                FindViewById<EditText>(Resource.Id.HomeAddName).Text = stock.Name;
+                FindViewById<EditText>(Resource.Id.HomeAddSymbol).Text = stock.Ticker;
+                FindViewById<EditText>(Resource.Id.HomeAddExchange).Text = stock.Exchange;
+                FindViewById<EditText>(Resource.Id.HomeAddUnits).Text = stock.Qty.ToString();
+                FindViewById<EditText>(Resource.Id.HomeAddPrice).Text = stock.UnitCost.ToString();
+                FindViewById<EditText>(Resource.Id.HomeAddShort).Text = stock.Short ? "yes" : "no" ;
+                FindViewById<EditText>(Resource.Id.HomeAddDate).Text = stock.PurchaseDate.ToString("dddd, MMMM %d, yyyy");
+            }
 
             dateBtn.Click += (o, e) =>
             {
@@ -33,22 +71,28 @@ namespace PortFolioStatus
                 });
                 frag.Show(FragmentManager, DatePickerFragment.TAG);
             };
-            
+
             saveBtn.Click += (o, e) =>
             {
-                var resp = DBLayer.InsertUpdate(new Stock
+                var date = FindViewById<EditText>(Resource.Id.HomeAddDate).Text;
+                DateTime parsedDate = ParsedDate(date);
+                var insert = new Stock
                 {
                     Name = FindViewById<EditText>(Resource.Id.HomeAddName).Text,
-                    PurchaseDate = DateTime.Parse(FindViewById<EditText>(Resource.Id.HomeAddDate).Text),
+                    PurchaseDate = parsedDate,
                     Ticker = FindViewById<EditText>(Resource.Id.HomeAddSymbol).Text,
                     Exchange = FindViewById<EditText>(Resource.Id.HomeAddExchange).Text,
                     Qty = int.Parse(FindViewById<EditText>(Resource.Id.HomeAddUnits).Text),
                     UnitCost = decimal.Parse(FindViewById<EditText>(Resource.Id.HomeAddPrice).Text),
                     Short = FindViewById<EditText>(Resource.Id.HomeAddShort).Text.ToUpper().StartsWith("Y") ? true : false,
-                });
+                };
+                if (!string.IsNullOrEmpty(id))
+                    insert.ID = int.Parse(id);
+                var resp = DBLayer.InsertUpdate(insert);
                 Toast.MakeText(this, resp ? "success" : "fail", ToastLength.Long).Show();
-                
-                Finish();
+
+                var intent = new Intent(this, typeof(MainActivity)).SetFlags(ActivityFlags.NewTask);
+                StartActivity(intent);
             };
 
             cancelBtn.Click += (o, e) =>
