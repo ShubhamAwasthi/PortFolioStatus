@@ -50,7 +50,7 @@ namespace PortFolioStatus
             var cancelBtn = FindViewById<Button>(Resource.Id.btnHomeCancel);
             var dateBtn = FindViewById<Button>(Resource.Id.btnHomeDate);
             var selectedDate = FindViewById<EditText>(Resource.Id.HomeAddDate);
-            var id = Intent.GetStringExtra("Id") ?? "";
+            var id = Intent.GetStringExtra("Id") ?? null;
             if (!string.IsNullOrEmpty(id))
             {
                 Stock stock = DBLayer.GetRecordByID(int.Parse(id));
@@ -76,6 +76,7 @@ namespace PortFolioStatus
             {
                 var date = FindViewById<EditText>(Resource.Id.HomeAddDate).Text;
                 DateTime parsedDate = ParsedDate(date);
+                var isShort = FindViewById<EditText>(Resource.Id.HomeAddShort).Text.ToUpper().StartsWith("Y");
                 var insert = new Stock
                 {
                     Name = FindViewById<EditText>(Resource.Id.HomeAddName).Text,
@@ -84,10 +85,19 @@ namespace PortFolioStatus
                     Exchange = FindViewById<EditText>(Resource.Id.HomeAddExchange).Text,
                     Qty = int.Parse(FindViewById<EditText>(Resource.Id.HomeAddUnits).Text),
                     UnitCost = decimal.Parse(FindViewById<EditText>(Resource.Id.HomeAddPrice).Text),
-                    Short = FindViewById<EditText>(Resource.Id.HomeAddShort).Text.ToUpper().StartsWith("Y") ? true : false,
+                    Short = isShort,
                 };
                 if (!string.IsNullOrEmpty(id))
                     insert.ID = int.Parse(id);
+                else {
+                    var refRecord = new List<Stock>();
+                    DBLayer.GetRecords(ref refRecord);
+                    var record = refRecord.Where(x => x.Name == insert.Name);
+                    if (record.Any()) {
+                        Toast.MakeText(this, "Please Choose different name", ToastLength.Long).Show();
+                        return;
+                    }
+                }
                 var resp = DBLayer.InsertUpdate(insert);
                 Toast.MakeText(this, resp ? "success" : "fail", ToastLength.Long).Show();
 

@@ -170,9 +170,7 @@ namespace PortFolioStatus
 
             var listItem = items[groupPosition];
 
-            var dbItem = dbItems.Find(x=>listItem.Exchange.Contains(x.Exchange) 
-                                    && listItem.Ticker.Contains(x.Ticker) 
-                                    && listItem.OriginalPrice.Contains(x.UnitCost.ToString()));
+            var dbItem = dbItems.Find(x=>listItem.Name.Split(' ')[1].Trim().Equals(x.Name));
 
             title.Text = dbItem.Name.Trim();
             var titleColor = Color.Snow;
