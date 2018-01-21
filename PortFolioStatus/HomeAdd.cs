@@ -33,11 +33,11 @@ namespace PortFolioStatus
                 { "november", "11" },
                 { "december", "12" },
             };
-            var tokens = date.Split(',');
+            return DateTime.Parse(date);
+            var tokens = date.Split(' ');
             var year = tokens[2].Trim();
-            var monthDate = tokens[1].Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
-            var month = monthDigit[monthDate[0].ToLower().Trim()];
-            var day = monthDate[1].Trim();
+            var month = monthDigit[tokens[1].ToLower().Trim()];
+            var day = tokens[0].Trim();
             return new DateTime(int.Parse(year), int.Parse(month), int.Parse(day));
 
         }
@@ -107,7 +107,7 @@ namespace PortFolioStatus
 
             cancelBtn.Click += (o, e) =>
             {
-                Finish();
+                base.Finish();
             };
 
         }

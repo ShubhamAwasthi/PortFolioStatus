@@ -17,7 +17,7 @@ namespace PortFolioStatus
 
         public static bool InitDB()
         {
-            var response =  CreateDB(GetPath());
+            var response = CreateDB(GetPath());
             if (response)
                 Seed();
             return response;
@@ -28,7 +28,8 @@ namespace PortFolioStatus
             return InsertUpdateData(data, GetPath());
         }
 
-        public static bool Delete(Stock data) {
+        public static bool Delete(Stock data)
+        {
             return DeleteData(data, GetPath());
         }
 
@@ -44,7 +45,8 @@ namespace PortFolioStatus
             return false;
         }
 
-        public static Stock GetRecordByID(int id) {
+        public static Stock GetRecordByID(int id)
+        {
             Stock response = null;
 
             var list = FindRecords(GetPath());
@@ -118,13 +120,13 @@ namespace PortFolioStatus
             try
             {
                 var db = new SQLiteAsyncConnection(path);
-                
+
                 var list = db.QueryAsync<Stock>("SELECT * FROM Stock").Result;
 
                 Log.Debug("FindRecords", "Found " + list.Count + " Records");
                 return list;
             }
-            catch (SQLiteException ex)
+            catch (Exception ex)
             {
                 Log.Error("FindRrecords", "Error from DB: " + ex.Message);
                 return null;
@@ -133,10 +135,50 @@ namespace PortFolioStatus
 
         public static void Seed()
         {
-            var s1 = new Stock { Name = "Reliance Industries", UnitCost = 12.09M, Ticker = "RELIANCE", PurchaseDate = DateTime.Now, Qty = 20, Short = false, Exchange = "NSE" };
-            var s2 = new Stock { Name = "EPC Industries", UnitCost = 11.09M, Ticker = "523754", PurchaseDate = DateTime.Now, Qty = 10, Short = true, Exchange = "BOM" };
-            InsertUpdateData(s1, GetPath());
-            InsertUpdateData(s2, GetPath());
+            var s = new List<Stock>()
+            { new Stock { Name = "Atlas Cycles", UnitCost = 242.50M, Ticker = "ATLASCYCLE", PurchaseDate = DateTime.Now, Qty = 200, Short = false, Exchange = "NSE" },
+new Stock { Name = "Coal India", UnitCost = 278.65M, Ticker = "COALINDIA", PurchaseDate = DateTime.Now, Qty = 150, Short = false, Exchange = "NSE" },
+new Stock { Name = "Greaves Cotton", UnitCost = 163.00M, Ticker = "GREAVESCOT", PurchaseDate = DateTime.Now, Qty = 150, Short = false, Exchange = "NSE" },
+new Stock { Name = "JMT Auto", UnitCost = 5.65M, Ticker = "JMTAUTOLTD", PurchaseDate = DateTime.Now, Qty = 400, Short = false, Exchange = "NSE" },
+new Stock { Name = "O N G C", UnitCost = 195.75M, Ticker = "ONGC", PurchaseDate = DateTime.Now, Qty = 100, Short = false, Exchange = "NSE" },
+new Stock { Name = "Sun Pharma.Inds.", UnitCost = 531.18M, Ticker = "SUNPHARMA", PurchaseDate = DateTime.Now, Qty = 130, Short = false, Exchange = "NSE" },
+new Stock { Name = "UCO Bank", UnitCost = 38.70M, Ticker = "UCOBANK", PurchaseDate = DateTime.Now, Qty = 100, Short = false, Exchange = "NSE" },
+new Stock { Name = "Wockhardt", UnitCost = 929.95M, Ticker = "WOCKPHARMA", PurchaseDate = DateTime.Now, Qty = 100, Short = false, Exchange = "NSE" },
+            new Stock { Name = "Aditya Birla Cap", UnitCost = 193.93M, Ticker = "ABCAPITAL", PurchaseDate = DateTime.Now, Qty = 250, Short = false, Exchange = "NSE" },
+new Stock { Name = "Amba Enterprises", UnitCost = 0.00M, Ticker = "539196", PurchaseDate = DateTime.Now, Qty = 30, Short = false, Exchange = "BOM" },
+new Stock { Name = "Andhra Bank", UnitCost = 58.50M, Ticker = "ANDHRABANK", PurchaseDate = DateTime.Now, Qty = 100, Short = false, Exchange = "NSE" },
+new Stock { Name = "Apex Frozen", UnitCost = 328.80M, Ticker = "APEX", PurchaseDate = DateTime.Now, Qty = 50, Short = false, Exchange = "NSE" },
+new Stock { Name = "Astra Microwave", UnitCost = 137.08M, Ticker = "ASTRAMICRO", PurchaseDate = DateTime.Now, Qty = 100, Short = false, Exchange = "NSE" },
+new Stock { Name = "CG Power & Indu.", UnitCost = 86.15M, Ticker = "CGPOWER", PurchaseDate = DateTime.Now, Qty = 100, Short = false, Exchange = "NSE" },
+new Stock { Name = "Cupid Trades", UnitCost = 144.41M, Ticker = "512361", PurchaseDate = DateTime.Now, Qty = 100, Short = false, Exchange = "BOM" },
+new Stock { Name = "Elder Pharma", UnitCost = 105.45M, Ticker = "ELDERPHARM", PurchaseDate = DateTime.Now, Qty = 100, Short = false, Exchange = "NSE" },
+new Stock { Name = "Equitas Holdings", UnitCost = 164.30M, Ticker = "EQUITAS", PurchaseDate = DateTime.Now, Qty = 150, Short = false, Exchange = "NSE" },
+new Stock { Name = "Gati", UnitCost = 157.80M, Ticker = "GATI", PurchaseDate = DateTime.Now, Qty = 350, Short = false, Exchange = "NSE" },
+new Stock { Name = "Greaves Cotton", UnitCost = 135.39M, Ticker = "GREAVESCOT", PurchaseDate = DateTime.Now, Qty = 100, Short = false, Exchange = "NSE" },
+new Stock { Name = "H D I L", UnitCost = 60.81M, Ticker = "HDIL", PurchaseDate = DateTime.Now, Qty = 600, Short = false, Exchange = "NSE" },
+new Stock { Name = "Hindalco Inds.", UnitCost = 260.04M, Ticker = "HINDALCO", PurchaseDate = DateTime.Now, Qty = 100, Short = false, Exchange = "NSE" },
+new Stock { Name = "HPL Electric", UnitCost = 135.25M, Ticker = "HPL", PurchaseDate = DateTime.Now, Qty = 100, Short = false, Exchange = "NSE" },
+new Stock { Name = "JMT Auto 2", UnitCost = 28.25M, Ticker = "JMTAUTOLTD", PurchaseDate = DateTime.Now, Qty = 100, Short = false, Exchange = "NSE" },
+new Stock { Name = "JVL Agro Indus", UnitCost = 37.75M, Ticker = "JVLAGRO", PurchaseDate = DateTime.Now, Qty = 200, Short = false, Exchange = "NSE" },
+new Stock { Name = "M R P L", UnitCost = 131.02M, Ticker = "MRPL", PurchaseDate = DateTime.Now, Qty = 1000, Short = false, Exchange = "NSE" },
+new Stock { Name = "Marico", UnitCost = 327.65M, Ticker = "MARICO", PurchaseDate = DateTime.Now, Qty = 100, Short = false, Exchange = "NSE" },
+new Stock { Name = "Munjal Auto Inds", UnitCost = 85.98M, Ticker = "MUNJALAU", PurchaseDate = DateTime.Now, Qty = 100, Short = false, Exchange = "NSE" },
+new Stock { Name = "O N G C 2", UnitCost = 180.55M, Ticker = "ONGC", PurchaseDate = DateTime.Now, Qty = 100, Short = false, Exchange = "NSE" },
+new Stock { Name = "Patidar Build.", UnitCost = 234.55M, Ticker = "524031", PurchaseDate = DateTime.Now, Qty = 25, Short = false, Exchange = "BOM" },
+new Stock { Name = "Power Fin.Corpn.", UnitCost = 119.38M, Ticker = "PFC", PurchaseDate = DateTime.Now, Qty = 600, Short = false, Exchange = "NSE" },
+new Stock { Name = "Pricol", UnitCost = 108.68M, Ticker = "540293", PurchaseDate = DateTime.Now, Qty = 400, Short = false, Exchange = "BOM" },
+new Stock { Name = "Repco Home Fin", UnitCost = 770.48M, Ticker = "REPCOHOME", PurchaseDate = DateTime.Now, Qty = 25, Short = false, Exchange = "NSE" },
+new Stock { Name = "Snowman Logistic", UnitCost = 74.10M, Ticker = "SNOWMAN", PurchaseDate = DateTime.Now, Qty = 400, Short = false, Exchange = "NSE" },
+new Stock { Name = "Strides Shasun", UnitCost = 880.13M, Ticker = "STAR", PurchaseDate = DateTime.Now, Qty = 120, Short = false, Exchange = "NSE" },
+new Stock { Name = "Sun Pharma.Inds. 2", UnitCost = 551.94M, Ticker = "SUNPHARMA", PurchaseDate = DateTime.Now, Qty = 330, Short = false, Exchange = "NSE" },
+new Stock { Name = "The Byke Hospi.", UnitCost = 187.75M, Ticker = "BYKE", PurchaseDate = DateTime.Now, Qty = 15, Short = false, Exchange = "NSE" },
+new Stock { Name = "Torrent Power", UnitCost = 271.40M, Ticker = "TORNTPOWER", PurchaseDate = DateTime.Now, Qty = 100, Short = false, Exchange = "NSE" },
+new Stock { Name = "UCO Bank 2", UnitCost = 46.25M, Ticker = "UCOBANK", PurchaseDate = DateTime.Now, Qty = 100, Short = false, Exchange = "NSE" },
+new Stock { Name = "Wockhardt 2", UnitCost = 805.43M, Ticker = "WOCKPHARMA", PurchaseDate = DateTime.Now, Qty = 200, Short = false, Exchange = "NSE" },};
+            foreach (var i in s)
+            {
+                InsertUpdateData(i, GetPath());
+            }
         }
         public static bool Flush()
         {

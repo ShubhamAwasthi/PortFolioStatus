@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using Java.Lang;
 using Android.Graphics;
+using System.Linq;
 
 namespace PortFolioStatus
 {
@@ -82,8 +83,8 @@ namespace PortFolioStatus
                 };
             }
 
-            if (!IsFixed)
-                return view;
+            //if (!IsFixed)
+            //    return view;
 
             var chgLastTrade = view.FindViewById<TextView>(Resource.Id.ChangeFromLastTrade);
             var chgPctLastTrade = view.FindViewById<TextView>(Resource.Id.ChangePctFromLastTrade);
@@ -123,7 +124,7 @@ namespace PortFolioStatus
 
             name.SetTextColor(Color.Chocolate);
 
-            
+
 
             return view;
         }
@@ -169,9 +170,18 @@ namespace PortFolioStatus
             var currentPrice = view.FindViewById<TextView>(Resource.Id.groupCurrentPrice);
 
             var listItem = items[groupPosition];
-
-            var dbItem = dbItems.Find(x=>listItem.Name.Split(' ')[1].Trim().Equals(x.Name));
-
+            DBLayer.GetRecords(ref dbItems);
+            Stock dbItem = null;
+            try
+            {
+                dbItem = dbItems.FirstOrDefault(x => listItem.Name.Split(':')[1].Trim() == x.Name);
+            }
+            catch (System.Exception e)
+            {
+                var msg = (dbItems.FirstOrDefault(x => listItem.Name.Split(':')[1].Trim() == x.Name) ==  null) + listItem.Name;
+            }
+            //if (dbItem == null)
+            //    return view;
             title.Text = dbItem.Name.Trim();
             var titleColor = Color.Snow;
             title.SetTextColor(titleColor);
@@ -196,8 +206,8 @@ namespace PortFolioStatus
                 if (dbItem.Short)
                 {
                     currentPrice.Text = dbItem.UnitCost.ToString().Trim().PadRight(12).PadLeft(10);
-                    price.Text = (googleItem.Price.ToString().Trim() + "*").PadRight(12).PadLeft(10);
-                    if (dbItem.UnitCost < googleItem.Price)
+                    price.Text = googleItem == null ? "Not Found" : (googleItem.Price.ToString().Trim() + "*").PadRight(12).PadLeft(10);
+                    if (googleItem == null || dbItem.UnitCost < googleItem.Price)
                         price.SetTextColor(Color.Red);
                     else
                         price.SetTextColor(Color.Green);
@@ -205,8 +215,8 @@ namespace PortFolioStatus
                 else
                 {
                     price.Text = dbItem.UnitCost.ToString().Trim().PadRight(12).PadLeft(10);
-                    currentPrice.Text = (googleItem.Price.ToString().Trim() + "*").PadRight(12).PadLeft(10);
-                    if (dbItem.UnitCost > googleItem.Price)
+                    currentPrice.Text = googleItem == null ? "Not Found" : (googleItem.Price.ToString().Trim() + "*").PadRight(12).PadLeft(10);
+                    if (googleItem == null || dbItem.UnitCost > googleItem.Price)
                         currentPrice.SetTextColor(Color.Red);
                     else
                         currentPrice.SetTextColor(Color.Green);

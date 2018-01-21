@@ -9,6 +9,7 @@ using System.Net.Http;
 using System.Text.RegularExpressions;
 using Newtonsoft.Json.Linq;
 using Android.Content;
+using System.Linq;
 
 namespace PortFolioStatus
 {
@@ -73,16 +74,28 @@ namespace PortFolioStatus
         private List<StockItemGoogle> GetStocksInfo(Context ctx, List<Stock> stockList)
         {
             var stockGoogle = new List<StockItemGoogle>();
+            var records = new List<Stock>();
+            DBLayer.GetRecords(ref records);
+            
             try
             {
-                using (var client = new HttpClient())
+                var list = new List<Stock>();
+                var count = list.Count;
+                do
                 {
-                    var response = client.GetAsync("https://finance.google.com/finance?q=NSE:RELIANCE,NSE:TATAMOTORS,BOM:523754,NSE:Infy").Result;
-                    var content = response.Content.ReadAsStringAsync().Result;
-                    content = Regex.Match(content, "rows\":(?<value>\\[.*?}\\])").Value.Substring(6);
-                    var jArrayContent = JArray.Parse(content);
-                    stockGoogle = GetStocksFromGoogleResponse(jArrayContent);
-                }
+                    list = records.Skip(count).Take(10).ToList();
+                    count += 10;
+                    var items = string.Join(",", list.Select(x => x.Exchange + ":" + x.Ticker).ToList());
+                    using (var client = new HttpClient())
+                    {
+                        var response = client.GetAsync("https://finance.google.com/finance?q=" + items).Result;
+                        var content = response.Content.ReadAsStringAsync().Result;
+                        content = Regex.Match(content, "rows\":(?<value>\\[.*}\\]),\"visible_cols").Value.Substring(6);
+                        content = content.Substring(0, content.LastIndexOf(",\"visible_cols"));
+                        var jArrayContent = JArray.Parse(content);
+                        stockGoogle.AddRange(GetStocksFromGoogleResponse(jArrayContent));
+                    }
+                } while (count < records.Count);
             }
             catch (HttpRequestException e)
             {
@@ -125,16 +138,22 @@ namespace PortFolioStatus
 
             foreach (var item in arr)
             {
-                var stock = new StockItemGoogle
+                try
                 {
-                    Ticker = item["values"][0].Value<string>(),
-                    Exchange = item["values"][8].Value<string>(),
-                    Price = item["values"][2].Value<decimal>(),
-                    Date = DateTime.Now,
-                    Change = item["values"][3].Value<decimal>(),
-                    ChangePct = item["values"][5].Value<decimal>()
-                };
-                list.Add(stock);
+                    var stock = new StockItemGoogle
+                    {
+
+                        Ticker = item["values"][0].Value<string>(),
+                        Exchange = item["values"][8].Value<string>(),
+                        Price = item["values"][2].Value<decimal>(),
+                        Date = DateTime.Now,
+                        Change = item["values"][3].Value<decimal>(),
+                        ChangePct = item["values"][5].Value<decimal>()
+                    };
+                    list.Add(stock);
+                }
+                catch (Exception ex) { }
+                
             }
 
             return list;

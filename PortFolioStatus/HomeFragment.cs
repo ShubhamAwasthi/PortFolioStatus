@@ -10,6 +10,7 @@ using Android.Content;
 using Android.Graphics;
 using Android.Util;
 using System.Text.RegularExpressions;
+using System.Linq;
 
 namespace PortFolioStatus
 {
@@ -30,7 +31,6 @@ namespace PortFolioStatus
         public override View OnCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
         {
             //DBLayer.Flush();
-            //DBLayer.Seed();
             View view = inflater.Inflate(Resource.Layout.Home, null);
             stockList = GetStockListForAdapter();
             var stocksListView = view.FindViewById<ExpandableListView>(Resource.Id.stocksList);
@@ -114,14 +114,23 @@ namespace PortFolioStatus
             var stockGoogle = new List<StockItemGoogle>();
             try
             {
-                using (var client = new HttpClient())
+                var list = new List<Stock>();
+                var count = list.Count;
+                do
                 {
-                    var response = client.GetAsync("https://finance.google.com/finance?q=NSE:RELIANCE,NSE:TATAMOTORS,BOM:523754,NSE:Infy").Result;
-                    var content = response.Content.ReadAsStringAsync().Result;
-                    content = Regex.Match(content, "rows\":(?<value>\\[.*?}\\])").Value.Substring(6);
-                    var jArrayContent = JArray.Parse(content);
-                    stockGoogle = GetStocksFromGoogleResponse(jArrayContent);
-                }
+                    list = dbList.Skip(count).Take(10).ToList();
+                    count += 10;
+                    var items = string.Join(",", list.Select(x => x.Exchange + ":" + x.Ticker).ToList());
+                    using (var client = new HttpClient())
+                    {
+                        var response = client.GetAsync("https://finance.google.com/finance?q=" + items).Result;
+                        var content = response.Content.ReadAsStringAsync().Result;
+                        content = Regex.Match(content, "rows\":(?<value>\\[.*}\\]),\"visible_cols").Value.Substring(6);
+                        content = content.Substring(0, content.LastIndexOf(",\"visible_cols"));
+                        var jArrayContent = JArray.Parse(content);
+                        stockGoogle.AddRange(GetStocksFromGoogleResponse(jArrayContent));
+                    }
+                } while (count < dbList.Count);
             }
             catch(HttpRequestException e)
             {
@@ -172,10 +181,20 @@ namespace PortFolioStatus
         private decimal Percentage(decimal initial, decimal final, bool IsShort = false)
         {
             decimal resp = 0;
-            if(IsShort)
-                resp =  (initial - final) * 100 / final;
+            if (IsShort)
+            {
+                if (final == 0)
+                    resp = 0;
+                else
+                    resp = (initial - final) * 100 / final;
+            }
             else
-                resp = (final - initial) * 100 / initial;
+            {
+                if (initial == 0)
+                    resp = 9999;
+                else
+                    resp = (final - initial) * 100 / initial;
+            }
             resp = Math.Round(resp, 2);
             return resp;
         }
@@ -196,16 +215,20 @@ namespace PortFolioStatus
 
             foreach (var item in arr)
             {
-                var stock = new StockItemGoogle
+                try
                 {
-                    Ticker = item["values"][0].Value<string>(),
-                    Exchange = item["values"][8].Value<string>(),
-                    Price = item["values"][2].Value<decimal>(),
-                    Date = DateTime.Now,
-                    Change = item["values"][3].Value<decimal>(),
-                    ChangePct = item["values"][5].Value<decimal>()
-                };
-                list.Add(stock);
+                    var stock = new StockItemGoogle
+                    {
+                        Ticker = item["values"][0].Value<string>(),
+                        Exchange = item["values"][8].Value<string>(),
+                        Price = item["values"][2].Value<decimal>(),
+                        Date = DateTime.Now,
+                        Change = item["values"][3].Value<decimal>(),
+                        ChangePct = item["values"][5].Value<decimal>()
+                    };
+                    list.Add(stock);
+                }
+                catch (Exception e) { }
             }
 
             return list;

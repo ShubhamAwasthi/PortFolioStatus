@@ -13,7 +13,16 @@ namespace PortFolioStatus
         protected override void OnCreate(Bundle bundle)
         {
             base.OnCreate(bundle);
-
+            var arry = new List<Stock>();
+            //DBLayer.Flush();
+            //if (!DBLayer.GetRecords(ref arry))
+            //{
+            //    DBLayer.InitDB();
+            //}
+            //else if (arry.Count == 0)
+            //{
+            //    DBLayer.Seed();
+            //}
             SetContentView(Resource.Layout.Main);
             var fragments = new Android.Support.V4.App.Fragment[] {
                 new HomeFragment(),
