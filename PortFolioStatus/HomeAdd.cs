@@ -92,7 +92,7 @@ namespace PortFolioStatus
                 else {
                     var refRecord = new List<Stock>();
                     DBLayer.GetRecords(ref refRecord);
-                    var record = refRecord.Where(x => x.Name == insert.Name);
+                    var record = refRecord.Where(x => x.Name.Trim() == insert.Name.Trim());
                     if (record.Any()) {
                         Toast.MakeText(this, "Please Choose different name", ToastLength.Long).Show();
                         return;

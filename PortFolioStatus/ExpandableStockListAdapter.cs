@@ -174,11 +174,11 @@ namespace PortFolioStatus
             Stock dbItem = null;
             try
             {
-                dbItem = dbItems.FirstOrDefault(x => listItem.Name.Split(':')[1].Trim() == x.Name);
+                dbItem = dbItems.FirstOrDefault(x => listItem.Name.Split(':')[1].Trim() == x.Name.Trim());
             }
             catch (System.Exception e)
             {
-                var msg = (dbItems.FirstOrDefault(x => listItem.Name.Split(':')[1].Trim() == x.Name) ==  null) + listItem.Name;
+                var msg = (dbItems.FirstOrDefault(x => listItem.Name.Split(':')[1].Trim() == x.Name.Trim()) ==  null) + listItem.Name;
             }
             //if (dbItem == null)
             //    return view;

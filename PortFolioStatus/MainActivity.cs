@@ -15,10 +15,10 @@ namespace PortFolioStatus
             base.OnCreate(bundle);
             var arry = new List<Stock>();
             //DBLayer.Flush();
-            //if (!DBLayer.GetRecords(ref arry))
-            //{
-            //    DBLayer.InitDB();
-            //}
+            if (!DBLayer.GetRecords(ref arry))
+            {
+                DBLayer.InitDB();
+            }
             //else if (arry.Count == 0)
             //{
             //    DBLayer.Seed();
