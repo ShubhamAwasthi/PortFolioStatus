@@ -146,8 +146,8 @@ namespace PortFolioStatus
                 {
                     if(adapterItem.Exchange.Contains(item.Exchange) && adapterItem.Ticker.Contains(item.Ticker))
                     {
-                        var stockListItem = GetItemFromList(item.Exchange, item.Ticker);
-                        var stockListItemDB = GetItemFromDB(item.Exchange, item.Ticker);
+                        var stockListItem = GetItemFromList(item.Exchange, item.Ticker, adapterItem.Name);
+                        var stockListItemDB = GetItemFromDB(item.Exchange, item.Ticker, adapterItem.Name);
                         bool isShort = stockListItemDB.Short;
                         adapterItem.CurrentPrice = "Current Price: " + item.Price;
                         adapterItem.CurrentDate = "Current Date: " + item.Date;
@@ -170,10 +170,10 @@ namespace PortFolioStatus
             return item;
         }
 
-        private Stock GetItemFromDB(string exchange, string ticker)
+        private Stock GetItemFromDB(string exchange, string ticker, string name)
         {
             foreach (var item in dbList)
-                if (item.Ticker == ticker && item.Exchange == exchange)
+                if (item.Ticker == ticker && item.Exchange == exchange && ("Name: " + item.Name.Trim()) == name.Trim())
                     return item;
             return null;
         }
@@ -199,11 +199,11 @@ namespace PortFolioStatus
             return resp;
         }
 
-        private Stock GetItemFromList(string exchange, string ticker)
+        private Stock GetItemFromList(string exchange, string ticker, string name)
         {
             foreach(var item in dbList)
             {
-                if (item.Exchange == exchange && item.Ticker == ticker)
+                if (item.Exchange == exchange && item.Ticker == ticker && ("Name: " + item.Name.Trim()) == name.Trim())
                     return item;
             }
             return null;
