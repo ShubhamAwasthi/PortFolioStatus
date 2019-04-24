@@ -1,5 +1,5 @@
-﻿using Android.Util;
-using SQLite;
+﻿using Android.Database.Sqlite;
+using Android.Util;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -62,9 +62,9 @@ namespace PortFolioStatus
         {
             try
             {
-                var connection = new SQLiteAsyncConnection(path);
+                var db = new SQLite.SQLiteConnection(path, false);
                 {
-                    connection.CreateTableAsync<Stock>();
+                    db.CreateTable<Stock>();
                     Log.Debug("CreateDB", "Created DB");
                     return true;
                 }
@@ -80,12 +80,12 @@ namespace PortFolioStatus
         {
             try
             {
-                var db = new SQLiteAsyncConnection(path);
+                var db = new SQLite.SQLiteConnection(path, false);
                 var result = 0;
                 if (data.ID == 0)
-                    result = db.InsertAsync(data).Result;
+                    result = db.Insert(data);
                 else
-                    result = db.UpdateAsync(data).Result;
+                    result = db.Update(data);
                 if (result != 1)
                     throw new ApplicationException("Unable to Update DB for: " + data.ToString());
                 Log.Debug("InsertUpdateData", "Single data file inserted or updated");
@@ -102,9 +102,9 @@ namespace PortFolioStatus
         {
             try
             {
-                var db = new SQLiteAsyncConnection(path);
+                var db = new SQLite.SQLiteConnection(path, false);
                 var result = 0;
-                result = db.DeleteAsync(data).Result;
+                result = db.Delete(data);
                 Log.Debug("DeleteData", "Single data file deleted");
                 return true;
             }
@@ -119,9 +119,9 @@ namespace PortFolioStatus
         {
             try
             {
-                var db = new SQLiteAsyncConnection(path);
+                var db = new SQLite.SQLiteConnection(path, false);
 
-                var list = db.QueryAsync<Stock>("SELECT * FROM Stock").Result;
+                var list = db.Query<Stock>("SELECT * FROM Stock");
 
                 Log.Debug("FindRecords", "Found " + list.Count + " Records");
                 return list;
@@ -180,13 +180,13 @@ new Stock { Name = "Wockhardt 2", UnitCost = 805.43M, Ticker = "WOCKPHARMA", Pur
                 InsertUpdateData(i, GetPath());
             }
         }
-        public static bool Flush()
+        public static bool Flush(string path)
         {
             try
             {
-                var connection = new SQLiteAsyncConnection(GetPath());
+                var db = new SQLite.SQLiteConnection(path, false);
                 {
-                    var pass = connection.DropTableAsync<Stock>().Result;
+                    var pass = db.DropTable<Stock>();
                     var create = CreateDB(GetPath());
                     Log.Debug("DeletedDB", "Deleted DB");
                     return true;
